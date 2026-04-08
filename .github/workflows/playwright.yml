@@ -6,10 +6,17 @@ on:
   pull_request:
   workflow_dispatch:
 
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    permissions:
+      contents: read
+      pages: write
 
     steps:
       - name: Checkout
@@ -53,6 +60,8 @@ jobs:
       - name: Configure GitHub Pages
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         uses: actions/configure-pages@v5
+        with:
+          enablement: true
 
       - name: Upload report to Pages artifact
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
